@@ -1,5 +1,5 @@
-venv/
-keys/
+venv
+keys
 *.pyc
 Python
 *.swp
