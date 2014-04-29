@@ -1,0 +1,5 @@
+venv/
+keys/
+*.pyc
+Python
+*.swp
