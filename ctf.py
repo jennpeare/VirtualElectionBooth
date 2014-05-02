@@ -74,18 +74,18 @@ def generate_random_str():
 
 # CSRF check before each request
 @ctf.before_request
-# def csrf_protect():
-#     if request.method == "POST":
-#         token = session["csrf_token"]
-#         if not token or token != request.form["csrf_token"]:
-#             return "CSRF"
-#
-# def generate_csrf_token():
-#     if "csrf_token" not in session:
-#         session["csrf_token"] = generate_random_str()
-#     return session["csrf_token"]
-#
-# ctf.jinja_env.globals["csrf"] = generate_csrf_token() #global csrc token
+def csrf_protect():
+    if request.method == "POST" and request.path != "/add_voter":
+        token = session["csrf_token"]
+        if not token or token != request.form["csrf_token"]:
+            return "CSRF"
+
+def generate_csrf_token():
+    if "csrf_token" not in session:
+        session["csrf_token"] = generate_random_str()
+    return session["csrf_token"]
+
+ctf.jinja_env.globals["csrf"] = generate_csrf_token() #global csrc token
 
 if __name__ == "__main__":
     ctf.run(host="0.0.0.0", port=4321, debug=True, ssl_context=context)
