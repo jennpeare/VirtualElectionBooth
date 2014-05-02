@@ -12,40 +12,55 @@
     <h1>Election Results</h1>
     <h3>Final Results</h3>
     <table>
-      <thead>
-        <tr>
-          <th>Tea Party</th>
-          <th>Democratic Party</th>
-          <th>Republican Party</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Content Goes Here</td>
-          <td>Content Goes Here</td>
-          <td>Content Goes Here</td>
-        </tr>
-      </tbody>
+      <thead><tr>
+          <th width="150">Tea Party</th>
+          <th width="150">Democratic Party</th>
+          <th width="150">Republican Party</th>
+      </tr></thead>
+      <tbody><tr>
+          <td>{{ votes["tea"] }}</td>
+          <td>{{ votes["dem"] }}</td>
+          <td>{{ votes["rep"] }}</td>
+      </tr></tbody>
     </table>
 
     <h3>Voters Breakdown</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Tea Party</th>
-          <th>Democratic Party</th>
-          <th>Republican Party</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Content Goes Here</td>
-          <td>Content Goes Here</td>
-          <td>Content Goes Here</td>
-        </tr>
-      </tbody>
-    </table>
-    <a href="/" class="button">Back</a>
+    <div class="row">
+
+    <div class="small-4 columns"><table>
+      <thead><tr><th width="150">Tea Party</th></tr></thead>
+      <tbody><tr>
+          {% for voter in voters %}
+            {% if voters[voter]["vote"] == "tea" %}
+              <td>{{ voter }}</td>
+            {% endif %}
+          {% endfor %}
+      </tr></tbody>
+    </table></div>
+
+    <div class="small-4 columns"><table>
+      <thead><tr><th width="150">Democratic Party</th></tr></thead>
+      <tbody><tr>
+          {% for voter in voters %}
+            {% if voters[voter]["vote"] == "dem" %}
+              <td>{{ voter }}</td>
+            {% endif %}
+          {% endfor %}
+      </tr></tbody>
+    </table></div>
+
+    <div class="small-4 columns"><table>
+      <thead><tr><th width="150">Republican Party</th></tr></thead>
+      <tbody><tr>
+          {% for voter in voters %}
+            {% if voters[voter]["vote"] == "rep" %}
+              <td>{{ voter }}</td>
+            {% endif %}
+          {% endfor %}
+      </tr></tbody>
+    </table></div>
+
+    </div>
   </div></div>
 </body>
 </html>

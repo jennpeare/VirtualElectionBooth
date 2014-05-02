@@ -15,7 +15,7 @@ context.use_certificate_file("./keys/cert.pem")
 
 ctf = Flask(__name__)
 
-voters = {} # rand_id : [ valid_num, vote ]
+voters = {} # rand_id : { "valid_num" : valid_num, "vote": vote }
 validation_numbers = {} # valid_num : ifVoted
 votes = { "dem" : 0, "rep" : 0, "tea" : 0 }
 
@@ -33,6 +33,9 @@ def add_voter():
         valid_num = request.form["valid_num"]
         if verify_dig_sig(signature, valid_num):
             validation_numbers[valid_num] = False
+            return True
+        else:
+            return False
 
 @ctf.route("/confirmation", methods=["POST"])
 def confirmation():
@@ -42,8 +45,8 @@ def confirmation():
 
 @ctf.route("/results")
 def display_results():
-    # return render_template("ctf_results.html")
-    return str(validation_numbers) + " " + str(votes)
+    return render_template("ctf_results.html", voters=voters, votes=votes)
+    # return str(validation_numbers) + " " + str(votes)
 
 def verify_dig_sig(signature, message):
     f = open("./keys/rsa.pub", "r") # get public key
@@ -66,7 +69,8 @@ def validate_voter(rand_id, valid_num, vote):
         return "Your random identification number is already taken, please try again."
     elif validation_numbers.has_key(valid_num):
         if validation_numbers[valid_num] == False:
-            voters[rand_id] = [valid_num, vote] # store voting info
+            info = { "valid_num" : valid_num, "vote" : vote }
+            voters[rand_id] = info # store voting info
             votes[vote] = votes[vote] + 1 # increase tally
             validation_numbers[valid_num] = True # update: voter already voted
             eligible = True
