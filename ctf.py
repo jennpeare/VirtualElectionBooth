@@ -1,3 +1,7 @@
+from Crypto.Signature import PKCS1_PSS as PKCS
+from Crypto.Hash import SHA
+from Crypto.PublicKey import RSA
+from Crypto import Random
 from flask import Flask, render_template, request
 from OpenSSL import SSL
 import string, random
@@ -11,8 +15,8 @@ context.use_certificate_file("./keys/cert.pem")
 
 ctf = Flask(__name__)
 
-voters = {}
-validation_numbers = {} # list of eligible voters | if they've already voted
+voters = {} # rand_id : [ valid_num, vote ]
+validation_numbers = {} # valid_num : ifVoted
 votes = { "dem" : 0, "rep" : 0, "tea" : 0 }
 
 # stores CSRF token
@@ -25,12 +29,14 @@ def main():
 @ctf.route("/add_voter", methods=["POST"])
 def add_voter():
     if request.method == "POST":
-        if request.form["validation_num"]:
-            validation_numbers[request.form["validation_num"]] = False
-            return "200"
+        signature = request.form["digsig"]
+        valid_num = request.form["valid_num"]
+        print valid_num
+        if verify_dig_sig(signature, valid_num):
+            validation_numbers[valid_num] = False
+            return "OK"
         else:
-            return "400"
-
+            return "BAD"
 
 @ctf.route("/confirmation", methods=["POST"])
 def confirmation():
@@ -38,9 +44,21 @@ def confirmation():
         message = validate_voter(request.form["rand_id"], request.form["valid_num"], request.form["party"])
         return render_template("ctf_confirmation.html", message = message)
 
-@ctf.route("/voter_list")
-def voter_list():
+@ctf.route("/results")
+def display_results():
+    # return render_template("ctf_results.html")
     return str(validation_numbers) + " " + str(votes)
+
+def verify_dig_sig(signature, message):
+    f = open("./keys/rsa.pub", "r") # get public key
+    key = RSA.importKey(f.read())
+    h = SHA.new()
+    h.update(message)
+    verifier = PKCS.new(key)
+    if verifier.verify(h, signature):
+        print "The signature is authentic."
+    else:
+        print "The signature is not authentic."
 
 def validate_voter(rand_id, valid_num, vote):
     eligible = False
@@ -60,7 +78,14 @@ def validate_voter(rand_id, valid_num, vote):
             repeat = True
 
     if eligible == True:
-        return rand_id + ", thanks for voting for " + vote
+        party = ""
+        if vote == "dem":
+            party = "Democratic Party"
+        elif vote == "rep":
+            party = "Republican Party"
+        elif vote == "tea":
+            party = "Tea Party"
+        return rand_id + ", thanks for voting for the " + party + "!"
     elif repeat == True:
         return "You have alredy voted."
     else:
