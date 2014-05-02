@@ -32,10 +32,8 @@ def main():
 @cla.route("/validation", methods=["POST"])
 def validation():
     if request.method == "POST":
-        return render_template("cla_validation.html",
-          message = validate_voters(request.form["first"],
-                                    request.form["last"],
-                                    request.form["secret"]))
+        message = validate_voters(request.form["first"], request.form["last"], request.form["secret"])
+        return render_template("cla_validation.html", message = message)
 
 def send_to_ctf(validation_num):
     #h = SHA.new(validation_num).digest() # encryption

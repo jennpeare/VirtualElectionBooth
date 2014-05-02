@@ -22,24 +22,11 @@ votes = { "dem" : 0, "rep" : 0, "tea" : 0 }
 def main():
     return render_template("ctf_vote.html")
 
-@ctf.route("/hai", methods=["POST", "GET"])
+@ctf.route("/add_voter", methods=["POST"])
 def add_voter():
     if request.method == "POST":
-        print "POST"
-    else:
-        print "GET"
-
-# @ctf.route("/add_voter", methods=["POST"])
-# def add_voter():
-#     if request.method == "POST":
-#         print "HEY YO" + request.form['validation_num']
-#         return request.form["validation_num"]
-
-# @ctf.route("/add_voter", methods=["POST"])
-# def add_voter():
-#     if request.method == "POST":
-#         valid_num = request.form["validation_num"]
-#         validation_numbers[valid_num] = False
+        validation_numbers[request.form["validation_num"]] = False
+        return "YO"
 
 @ctf.route("/confirmation", methods=["POST"])
 def confirmation():
