@@ -34,6 +34,7 @@ def validation():
     if request.method == "POST":
         message = validate_voters(request.form["first"], request.form["last"], request.form["secret"])
         return render_template("cla_validation.html", message = message)
+        # return render_template("cla_validation.html")
 
 def send_to_ctf(validation_num):
     #h = SHA.new(validation_num).digest() # encryption

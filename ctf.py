@@ -16,7 +16,7 @@ validation_numbers = {} # list of eligible voters | if they've already voted
 votes = { "dem" : 0, "rep" : 0, "tea" : 0 }
 
 # stores CSRF token
-# session = {}
+session = {}
 
 @ctf.route("/")
 def main():
@@ -25,17 +25,19 @@ def main():
 @ctf.route("/add_voter", methods=["POST"])
 def add_voter():
     if request.method == "POST":
-        validation_numbers[request.form["validation_num"]] = False
-        return "YO"
+        if request.form["validation_num"]:
+            validation_numbers[request.form["validation_num"]] = False
+            return "200"
+        else:
+            return "400"
+
 
 @ctf.route("/confirmation", methods=["POST"])
 def confirmation():
     if request.method == "POST":
-        print "POST TO '/conf'"
-        return render_template("ctf_confirmation.html",
-          message = validate_voter(request.form["rand_id"],
-                                    request.form["valid_num"],
-                                    request.form["party"]))
+        return "confirmation"
+        message = validate_voter(request.form["rand_id"], request.form["valid_num"], request.form["party"])
+        return render_template("ctf_confirmation.html", message = message)
 
 @ctf.route("/voter_list")
 def voter_list():
@@ -71,7 +73,7 @@ def generate_random_str():
     rand = "".join(lst)
     return rand
 
-# # CSRF check before each request
+# CSRF check before each request
 # @ctf.before_request
 # def csrf_protect():
 #     if request.method == "POST":
