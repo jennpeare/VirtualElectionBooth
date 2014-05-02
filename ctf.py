@@ -35,7 +35,6 @@ def add_voter():
 @ctf.route("/confirmation", methods=["POST"])
 def confirmation():
     if request.method == "POST":
-        return "confirmation"
         message = validate_voter(request.form["rand_id"], request.form["valid_num"], request.form["party"])
         return render_template("ctf_confirmation.html", message = message)
 
@@ -74,7 +73,7 @@ def generate_random_str():
     return rand
 
 # CSRF check before each request
-# @ctf.before_request
+@ctf.before_request
 # def csrf_protect():
 #     if request.method == "POST":
 #         token = session["csrf_token"]
