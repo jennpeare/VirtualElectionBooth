@@ -1,0 +1,41 @@
+<!DOCTYPE>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLA - Vote Registration</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}">
+</head>
+
+<body>
+  <div class="row"><div class="small-12 columns">
+    <h1>Central Legitimization Agency (CLA)</h1>
+    <p>Welcome to the CLA! If you have have completed pre-registration, you are now eligible to register for voting.</p>
+    <p>Please complete the entire form below in order to correctly register.</p>
+    <form name="register" action="/validation" method="post">
+      <div class="row"><div class="small-8">
+        <div class="row">
+          <div class="small-3 columns"><label for="right-label" class="right inline">First name:</label></div>
+          <div class="small-9 columns"><input type="text" name="first" id="right-label" placeholder="Jane"></div>
+        </div>
+      </div></div>
+      <div class="row"><div class="small-8">
+        <div class="row">
+          <div class="small-3 columns"><label for="right-label" class="right inline">Last name:</label></div>
+          <div class="small-9 columns"><input type="text" name="last" id="right-label" placeholder="Doe"></div>
+        </div>
+      </div></div>
+      <div class="row"><div class="small-8">
+        <div class="row">
+          <div class="small-3 columns"><label for="right-label" class="right inline">Secret Code:</label></div>
+          <div class="small-9 columns"><input type="password" name="secret" id="right-label" placeholder="Your pre-registration code"></div>
+        </div>
+      </div></div>
+      <input name="csrf_token" type="hidden" value="{{ csrf }}">
+      <div class="row">
+        <div class="small-8"><input type="submit" value="Register" class="button right"></div>
+      </div>
+    </form>
+  </div></div>
+</body>
+</html>

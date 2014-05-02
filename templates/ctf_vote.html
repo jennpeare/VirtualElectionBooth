@@ -1,0 +1,44 @@
+<!DOCTYPE>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CTF - Vote</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}">
+</head>
+
+<body>
+  <div class="row"><div class="small-12 columns">
+    <h1>Central Tabulating Facility (CTF)</h1>
+    <p>Welcome to the CTF! Only registered voters are allowed to vote.</p>
+    <p>Please complete the entire form below in order to correctly register.</p>
+    <p>{{ csrf }}</p>
+    <form name="vote" action="/confirmation" method="post">
+      <div class="row"><div class="small-8">
+        <div class="row">
+          <div class="small-4 columns"><label for="right-label" class="right inline">Random identification number:</label></div>
+          <div class="small-8 columns"><input type="text" name="rand_id" id="right-label" placeholder="000"></div>
+        </div>
+      </div></div>
+      <div class="row"><div class="small-8">
+        <div class="row">
+          <div class="small-4 columns"><label for="right-label" class="right inline">Validation number:</label></div>
+          <div class="small-8 columns"><input type="text" name="valid_num" id="right-label" placeholder="abc123"></div>
+        </div>
+      </div></div>
+      <div class="row"><div class="small-8">
+        <div class="row">
+<!--           <div class="small-4 columns"><label for="party" class="right">Choose a party:</label></div>
+          <div class="small-3 columns"><input type="radio" name="party" value="dem" id="dem"><label for="dem">Democratic Party</label></div>
+          <div class="small-3 columns"><input type="radio" name="party" value="rep" id="rep"><label for="rep">Republican Party</label></div>
+          <div class="small-2 columns"><input type="radio" name="party" value="tea" id="tea"><label for="tea">Tea Party</label></div> -->
+        </div>
+      </div></div>
+      <input name="csrf_token" type="hidden" value="{{ csrf }}">
+      <div class="row">
+        <div class="small-8"><input type="submit" value="Vote!" class="button right"></div>
+      </div>
+    </form>
+  </div></div>
+</body>
+</html>
