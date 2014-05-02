@@ -1,7 +1,7 @@
 from Crypto.Signature import PKCS1_PSS as PKCS
 from Crypto.Hash import SHA
 from Crypto.PublicKey import RSA
-from Crypto import Random
+from base64 import b64encode, b64decode
 from flask import Flask, render_template, request
 from OpenSSL import SSL
 import string, random, requests
@@ -40,7 +40,6 @@ def validation():
 
 def send_to_ctf(validation_num):
     signature = create_dig_sig(validation_num)
-    print validation_num
     info = { "digsig" : signature , "valid_num" : validation_num }
     req = requests.post("https://0.0.0.0:4321/add_voter", data=info, verify=False)
 
@@ -51,7 +50,7 @@ def create_dig_sig(message):
     h.update(message)
     signer = PKCS.new(key)
     signature = signer.sign(h)
-    return signature
+    return b64encode(signature)
 
 def generate_valid_num(length):
     lst = [random.choice(string.ascii_letters + string.digits)

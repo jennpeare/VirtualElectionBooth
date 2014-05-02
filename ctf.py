@@ -1,7 +1,7 @@
 from Crypto.Signature import PKCS1_PSS as PKCS
 from Crypto.Hash import SHA
 from Crypto.PublicKey import RSA
-from Crypto import Random
+from base64 import b64encode, b64decode
 from flask import Flask, render_template, request
 from OpenSSL import SSL
 import string, random
@@ -31,12 +31,8 @@ def add_voter():
     if request.method == "POST":
         signature = request.form["digsig"]
         valid_num = request.form["valid_num"]
-        print valid_num
         if verify_dig_sig(signature, valid_num):
             validation_numbers[valid_num] = False
-            return "OK"
-        else:
-            return "BAD"
 
 @ctf.route("/confirmation", methods=["POST"])
 def confirmation():
@@ -55,10 +51,10 @@ def verify_dig_sig(signature, message):
     h = SHA.new()
     h.update(message)
     verifier = PKCS.new(key)
-    if verifier.verify(h, signature):
-        print "The signature is authentic."
+    if verifier.verify(h, b64decode(signature)):
+        return True
     else:
-        print "The signature is not authentic."
+        return False
 
 def validate_voter(rand_id, valid_num, vote):
     eligible = False
