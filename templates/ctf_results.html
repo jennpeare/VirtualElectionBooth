@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CLA - Results</title>
+  <title>CTF - Results</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}">
 </head>
 
@@ -29,38 +29,47 @@
 
     <div class="small-4 columns"><table>
       <thead><tr><th width="150">Tea Party</th></tr></thead>
-      <tbody><tr>
-          {% for voter in voters %}
-            {% if voters[voter]["vote"] == "tea" %}
-              <td>{{ voter }}</td>
-            {% endif %}
-          {% endfor %}
-      </tr></tbody>
+      <tbody>
+        {% for voter in voters %}
+          {% if voters[voter]["vote"] == "tea" %}
+            <tr><td>{{ voter }}</td></tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
     </table></div>
 
     <div class="small-4 columns"><table>
       <thead><tr><th width="150">Democratic Party</th></tr></thead>
-      <tbody><tr>
-          {% for voter in voters %}
-            {% if voters[voter]["vote"] == "dem" %}
-              <td>{{ voter }}</td>
-            {% endif %}
-          {% endfor %}
-      </tr></tbody>
+      <tbody>
+        {% for voter in voters %}
+          {% if voters[voter]["vote"] == "dem" %}
+            <tr><td>{{ voter }}</td></tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
     </table></div>
 
     <div class="small-4 columns"><table>
       <thead><tr><th width="150">Republican Party</th></tr></thead>
-      <tbody><tr>
-          {% for voter in voters %}
-            {% if voters[voter]["vote"] == "rep" %}
-              <td>{{ voter }}</td>
-            {% endif %}
-          {% endfor %}
-      </tr></tbody>
+      <tbody>
+        {% for voter in voters %}
+          {% if voters[voter]["vote"] == "rep" %}
+            <tr><td>{{ voter }}</td></tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
     </table></div>
-
     </div>
+
+    <h3>Names of Voters</h3>
+    <table>
+      <tbody><tr>
+        {% for name in names %}
+          <tr><td>{{ name }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
   </div></div>
 </body>
 </html>

@@ -1,0 +1,31 @@
+<!DOCTYPE>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Election Booth</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}">
+</head>
+
+<body>
+  <div class="row"><div class="small-12 columns">
+    <h1>Virtual Election Booth <small>Hello voter.</small></h1>
+    <div class="button-bar">
+      <ul class="button-group round">
+        <li><a href="https://0.0.0.0:1234" target="_blank" class="large button">Register</a></li>
+        {% if registration_end == True %}
+          <li><a href="https://0.0.0.0:4321" target="_blank" class="large button success">Vote!</a></li>
+        {% else %}
+          <li><div class="large button success disabled">Vote!</div></li>
+        {% endif %}
+
+        {% if election_end == True %}
+          <li><a href="https://0.0.0.0:4321/results" target="_blank" class="large button alert">See Results</a></li>
+        {% else %}
+          <li><div class="large button alert disabled">See Results</div></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div></div>
+</body>
+</html>

@@ -4,9 +4,7 @@ from Crypto.PublicKey import RSA
 from base64 import b64encode, b64decode
 from flask import Flask, render_template, request
 from OpenSSL import SSL
-import string, random
-
-# ctf use public key
+import string, random, requests
 
 # SSL setup
 context = SSL.Context(SSL.SSLv23_METHOD)
@@ -18,6 +16,7 @@ ctf = Flask(__name__)
 voters = {} # rand_id : { "valid_num" : valid_num, "vote": vote }
 validation_numbers = {} # valid_num : ifVoted
 votes = { "dem" : 0, "rep" : 0, "tea" : 0 }
+names = []
 
 # stores CSRF token
 session = {}
@@ -31,25 +30,48 @@ def add_voter():
     if request.method == "POST":
         signature = request.form["digsig"]
         valid_num = request.form["valid_num"]
+        verified = False
         if verify_dig_sig(signature, valid_num):
             validation_numbers[valid_num] = False
-            return True
-        else:
-            return False
+    return "add_voter"
+
+@ctf.route("/get_name", methods=["POST"])
+def get_names():
+    if request.method == "POST":
+        signature = request.form["digsig"]
+        name = request.form["name"]
+        if verify_dig_sig(signature, name):
+            names.append(name)
+    return "get_name"
 
 @ctf.route("/confirmation", methods=["POST"])
 def confirmation():
     if request.method == "POST":
         message = validate_voter(request.form["rand_id"], request.form["valid_num"], request.form["party"])
+        if "thanks" in message:
+            request_voter_name(request.form["valid_num"])
         return render_template("ctf_confirmation.html", message = message)
 
 @ctf.route("/results")
 def display_results():
-    return render_template("ctf_results.html", voters=voters, votes=votes)
-    # return str(validation_numbers) + " " + str(votes)
+    return render_template("ctf_results.html", voters=voters, votes=votes, names=names)
+
+def request_voter_name(valid_num):
+    signature = create_dig_sig(valid_num)
+    info = { "digsig" : signature , "valid_num" : valid_num }
+    req = requests.post("https://0.0.0.0:1234/voter_name", data=info, verify=False)
+
+def create_dig_sig(message):
+    f = open("./keys/ctf_rsa", "r") # get ctf's private key
+    key = RSA.importKey(f.read())
+    h = SHA.new()
+    h.update(message)
+    signer = PKCS.new(key)
+    signature = signer.sign(h)
+    return b64encode(signature)
 
 def verify_dig_sig(signature, message):
-    f = open("./keys/rsa.pub", "r") # get public key
+    f = open("./keys/rsa.pub", "r") # get cla's public key
     key = RSA.importKey(f.read())
     h = SHA.new()
     h.update(message)
@@ -62,8 +84,7 @@ def verify_dig_sig(signature, message):
 def validate_voter(rand_id, valid_num, vote):
     eligible = False
     repeat = False
-
-    if not rand_id or not valid_num or not vote:
+    if not rand_id or not valid_num or vote is None:
         return "Please fill all of the fields."
     elif voters.has_key(rand_id):
         return "Your random identification number is already taken, please try again."
@@ -100,7 +121,7 @@ def generate_random_str():
 # CSRF check before each request
 @ctf.before_request
 def csrf_protect():
-    if request.method == "POST" and request.path != "/add_voter":
+    if request.method == "POST" and request.path != "/add_voter" and request.path != "/get_name":
         token = session["csrf_token"]
         if not token or token != request.form["csrf_token"]:
             return "CSRF"
@@ -113,4 +134,4 @@ def generate_csrf_token():
 ctf.jinja_env.globals["csrf"] = generate_csrf_token() #global csrc token
 
 if __name__ == "__main__":
-    ctf.run(host="0.0.0.0", port=4321, debug=True, ssl_context=context)
+    ctf.run(host="0.0.0.0", port=4321, debug=True, threaded=True, ssl_context=context)
