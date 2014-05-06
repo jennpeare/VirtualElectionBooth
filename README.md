@@ -34,7 +34,7 @@ The HTML pages are styled using the Foundation front-end framework, which includ
 ###Secure Connection
 The CLA and CTF both have a pair of public and private keys. They are generated using the `genrsa` command in the OpenSSL library. Similarily, the self signed certificates are also created to use for SSL connection.
 
-In the python OpenSSL library, a context object must be defined. In this implementation, it is defined as using the SSLv23_METHOD and is associated with the certificates.
+In the python OpenSSL library, a context object must be defined. In this implementation, it is defined as using the `SSLv23_METHOD` and is associated with the certificates.
 
 ```
 #SSL setup
